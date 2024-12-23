@@ -4,15 +4,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Content-Type: application/json");
     //print_r($_POST);
 
-    $firstNameLogin = $_POST["first_name"];
-    $lastNameLogin = $_POST["last_name"];
+    $userName = $_POST['username'];
 
 
     //Connect to the database
     include "dbconnect.php";
 
-    $sql = "SELECT * FROM people WHERE first_name = '$firstNameLogin' and last_name = '$lastNameLogin'";
-    $sql_id = "SELECT id from people WHERE first_name = '$firstNameLogin' and last_name = '$lastNameLogin'";
+    $sql = "SELECT * FROM details WHERE username = '$userName'";
+    $sql_id = "SELECT id from details WHERE username = '$userName'";
 
     //Check if user exist in the database
     //If connect send user to their profile

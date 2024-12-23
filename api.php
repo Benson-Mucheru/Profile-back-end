@@ -10,25 +10,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
     // Example endpoint to fetch data
-    $firstName = $_POST['first_name'];
-    $lastName = $_POST['last_name'];
+    $username = $_POST['username'];
     $age = $_POST['age'];
     $bio = $_POST['bio'];
     $profilePic = $_FILES["profile_pic"]["name"];
-    $password = $_POST['password'];
-    echo $firstName . "<br/>";
-    echo $lastName . "<br/>";
-    echo $age . "<br/>";
-    echo $bio . "<br/>";
-    echo $profilePic . "<br/>";
+    //$password = $_POST['password'];
+    
 
     /* Connect to try database */
-    $dbhost = "localhost";
-    $dbusername = "ben";
-    $dbpassword = 12345;
-    $dbname = "try";
+    include_once "./dbconnect.php";
 
-    $conn = new mysqli($dbhost, $dbusername, $dbpassword, $dbname);
+    $conn = new mysqli($servername, $dbusername, $password, $dbname);
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     } else {
@@ -43,11 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
     //Insert data into try database
-    $sql = "INSERT INTO people(first_name, last_name, age, bio, image, password) 
-VALUES('$firstName' , '$lastName', '$age', '$bio', '$actualPath', '$password')";
+    $sql = "INSERT INTO details(username, age, bio, image) 
+VALUES('$username', '$age', '$bio', '$actualPath')";
 
     if ($conn->query($sql) === true) {
         echo "added";
+        header("Location: http://localhost:3001/profiles");
     } else {
         echo "not added";
     }
@@ -60,17 +53,25 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
     //headers required
     header("Access-Control-Allow-Origin: *");
-    header("Content-Type: application/json");
+  //header("Content-Type: application/json");
 
 
     //query statement
-    $sqlGet = "SELECT * FROM people WHERE id >= 30;";
+    $sqlGet = "SELECT * FROM details;";
     $resultArr = [];
     $selectQuery = $conn->query($sqlGet);
-    $imageUrl = $selectQuery->fetch_assoc();
+    
 
-    while ($rowResult = $selectQuery->fetch_assoc()) {
-        $resultArr[] = $rowResult;
+   
+
+    while($imageUrl = $selectQuery->fetch_assoc()){ 
+        $resultArr[] = $imageUrl;
     }
+   /* for($i = 1; $i <= $selectQuery->num_rows; $i++){
+    array_push($resultArr, $imageUrl);
+   } */
+    
     print_r(json_encode($resultArr));
+    //print_r(json_encode($imageUrl));
+    //print_r($imageUrl);
 }
